@@ -1,0 +1,118 @@
+9 Oct 2006 - bear
+
+    0.7.4 release
+    Setting trunk to 0.7.5
+
+5 Oct 2006 - darshana
+
+    Fixed "ago" bug -- Issue #7 http://code.google.com/p/parsedatetime/issues/detail?id=7
+    
+    Fixed bug where default year for dates that are in the future get next year, not 
+    current year -- Issue #8 http://code.google.com/p/parsedatetime/issues/detail?id=8
+
+    Fixed strings like "1 week ago", "lunch tomorrow"
+    
+25 Sep 2006 - bear
+
+    0.7.3 release
+    Setting trunk to 0.7.4
+
+13 Sep 2006 - bear
+
+    Added Darshana as an author and updated the copyright text
+    Added "eom" and "eoy" tests
+
+11 Sep 2006 - bear
+
+    Fixed a subtle dictionary reference bug in buildSources() that was causing
+    any source related modifier to not honor the day, month or year.  It only
+    started being seen as I was working on adding "eod" support as a 'true'
+    modifier instead.
+
+    Found another subtle bug in evalModifier() if the modifier was followed
+    by the day of the week - the offset math was not consistent with the
+    other day-of-week offset calculations.
+
+    Worked on converting "eod" support from the special case modifier to work
+    as a true modifier.
+
+    The following is now supported:
+        eod tomorrow
+        tomorrow eod
+        monday eod
+        eod monday
+        meeting eod
+        eod meeting
+
+10 Sep 2006 - bear
+
+    Added a sub-range test in response to Issue #6 http://code.google.com/p/parsedatetime/issues/detail?id=6
+
+    Not that it works, just wanted to start the process.
+
+6 Sep 2006 - bear
+
+    Alan Green filed Issue #5 http://code.google.com/p/parsedatetime/issues/detail?id=5
+
+    In it he asked for support for Australian date formats "dd-mm-yyyy"
+
+    This is the first attempt at supporting the parsing of dates where the order of the
+    day, month and year can vary.  I adjusted the parseDate() code to be data driven
+    and added a dp_order list to the Constants() class that is either initialized to the
+    proper order by the pdtLocale classes or the order is determined by parsing the ICU
+    short date format to figure out what the date separator is and then to find out what
+    order it's in.
+
+    I also added a TestAustralianLocale.py as a starting point for tests.
+
+    Attaching a diff of this code to the Issue so he can test it.
+
+1 Sep 2006 - bear
+
+    0.7.2 release
+
+31 Aug 2006 - bear
+
+    Fixed two bugs found by Darshana today.
+
+    The first is one of those forehead-slapping bugs that you see as
+    being so obvious *after* the fact :)  The problem is with Inc()
+    for months - if you increment from a month with the day set to
+    a value that is past the end of the month for the new month you
+    get an error.  For example Aug 31 to Sept - Sept doesn't have 31
+    days so it's an invalid date.
+
+    The second is with the code that identifies modifiers when you have
+    multiple "chunks" of text.  Darshana describes the bug this way:
+
+      "if you have "flight from SFO at 4pm" i.e. if you have a
+       non-date/time string before a modifier, then the invalidflag
+       is set"
+
+    I provided the Inc() fix and Darshana the modifier fix.
+
+    I also added a new unit test for the Inc() bug and also a new test
+    file for the modifier bug: TestPhrases.py
+
+29 Aug 2006 - bear
+
+    Updated ez_setup.py to latest version v0.6c1 and removed
+    hard-coded version in setup.py for setuptools
+
+25 Aug 2006 - bear
+
+    Moved the error tests into a single TestErrors.py
+    Added two tests for days - it figures out what the
+    previous day and next day is from the weekday the
+    test is run on
+
+24 Aug 2006 - bear
+
+    Issue #2 http://code.google.com/p/parsedatetime/issues/detail?id=2
+
+    Turns out that ICU works with weekdays in Sun..Sat order
+    and that Python uses Mon..Sun order.  Fixed PyICU locale code to
+    build the internal weekday list to be Python Style.
+
+    Bumping version to 0.7.1 as this is causing Chandler bug 6567
+    http://bugzilla.osafoundation.org/show_bug.cgi?id=6567
