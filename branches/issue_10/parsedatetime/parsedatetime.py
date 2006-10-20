@@ -606,6 +606,34 @@ class Calendar:
             return (sourceTime, sourceTime, True)
 
 
+    def _CalculateDOWDelta(self, wd, wkdy, offset, style):
+        if style == 1:
+            if offset == 1:
+                diff = 6 - wd + wkdy + 1
+            elif offset == -1:
+                diff = wd - wkdy + 7
+            else:
+                diff = wkdy - wd
+        elif style == -1:
+            if offset == 1:
+                diff = 6 - wd + wkdy + 1
+            elif offset == -1:
+                diff = wd - wkdy + 7
+            else:
+                diff = wkdy - wd
+        else:
+            if offset == 1:
+                diff = 6 - wd + wkdy + 1
+            elif offset == -1:
+                diff = wd - wkdy + 7
+            else:
+                diff = wkdy - wd
+
+        print "wd %s, wkdy %s, offset %d, style %d\n" % (wd, wkdy, offset, style)
+
+        return diff
+
+
     def _evalModifier(self, modifier, chunk1, chunk2, sourceTime):
         """
         Evaluate the modifier string and following text (passed in
@@ -734,23 +762,11 @@ class Calendar:
                         sourceTime = sources[modifier]
 
                 else:
-                    wkdy = self.ptc.WeekdayOffsets[wkdy]
-
-                    if offset == 0:
-                        start      = datetime.datetime(yr, mth, dy, 9, 0, 0)
-                        diff       = wkdy - wd
-                        target     = start + datetime.timedelta(days=diff)
-                        sourceTime = target.timetuple()
-                    elif offset == 1:
-                        diff       = 6 - wd + wkdy + 1
-                        start      = datetime.datetime(yr, mth, dy, 9, 0, 0)
-                        target     = start + datetime.timedelta(days=diff)
-                        sourceTime = target.timetuple()
-                    elif offset == -1:
-                        diff       = wd - wkdy + 7
-                        start      = datetime.datetime(yr, mth, dy, 9, 0, 0)
-                        target     = start + datetime.timedelta(days=-diff)
-                        sourceTime = target.timetuple() 
+                    wkdy       = self.ptc.WeekdayOffsets[wkdy]
+                    diff       = self._CalculateDOWDelta(wd, wkdy, offset, self.ptc.DOWParseStyle)
+                    start      = datetime.datetime(yr, mth, dy, 9, 0, 0)
+                    target     = start + datetime.timedelta(days=diff)
+                    sourceTime = target.timetuple()
 
                 flag = True
 
@@ -972,16 +988,17 @@ class Calendar:
             (yr, mth, dy, hr, mn, sec, wd, yd, isdst) = now
 
             start = datetime.datetime(yr, mth, dy, hr, mn, sec)
-            wkDy  = self.ptc.WeekdayOffsets[s]
+            wkdy  = self.ptc.WeekdayOffsets[s]
 
-            if wkDy > wd:
-                qty    = wkDy - wd
-                target = start + datetime.timedelta(days=qty)
-                wd     = wkDy
+            if wkdy > wd:
+                #qty    = wkdy - wd
+                qty = self._CalculateDOWDelta(wd, wkdy, 0, self.ptc.DOWParseStyle)
             else:
-                qty    = 6 - wd + wkDy + 1
-                target = start + datetime.timedelta(days=qty)
-                wd     = wkDy
+                #qty    = 6 - wd + wkdy + 1
+                qty = self._CalculateDOWDelta(wd, wkdy, 1, self.ptc.DOWParseStyle)
+
+            target = start + datetime.timedelta(days=qty)
+            wd     = wkdy
 
             sourceTime      = target.timetuple()
             self.weekdyFlag = False
