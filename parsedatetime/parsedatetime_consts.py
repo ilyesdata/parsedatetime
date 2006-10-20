@@ -677,6 +677,20 @@ class Constants:
 
         self.BirthdayEpoch = 50
 
+        # DOWParseStyle controls how we parse "Tuesday"
+        # If the current day was Thursday and the text to parse is "Tuesday"
+        # then the following table shows how each style would be returned
+        # -1, 0, +1
+        #
+        # Current day marked as ***
+        # 
+        #          Sun Mon Tue Wed Thu Fri Sat
+        # week -1          -1
+        # current           0      ***
+        # week +1          +1
+
+        self.DOWParseStyle = 0
+
         _initLocale(self)
         _initConstants(self)
         _initSymbols(self)
