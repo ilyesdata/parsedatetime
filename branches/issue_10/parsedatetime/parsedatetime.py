@@ -608,26 +608,25 @@ class Calendar:
 
     def _CalculateDOWDelta(self, wd, wkdy, offset, style, currentDayStyle):
         if offset == 1:
-            # modifier is indicating future week eg: "next". 
+            # modifier is indicating future week eg: "next".
             # DOW is calculated as DOW of next week
             diff = 7 - wd + wkdy
-        
+
         elif offset == -1:
-            # modifier is indicating past week eg: "last","previous" 
+            # modifier is indicating past week eg: "last","previous"
             # DOW is calculated as DOW of previous week
             diff = wkdy - wd - 7
-        
+
         elif offset == 0:
             # modifier is indiacting current week eg: "this"
             # DOW is calculated as DOW of this week
             diff = wkdy - wd
-        
+
         elif offset == 2:
-            # no modifier is present. 
+            # no modifier is present.
             # i.e. string to be parsed is just DOW
-            
             if style == 1:
-            # next occurance of the DOW is calculated
+                # next occurance of the DOW is calculated
                 if currentDayStyle == True:
                     if wkdy >= wd:
                         diff = wkdy - wd
@@ -638,7 +637,7 @@ class Calendar:
                         diff = wkdy - wd
                     else:
                         diff = 7 - wd + wkdy
-            
+
             elif style == -1:
                 # last occurance of the DOW is calculated
                 if currentDayStyle == True:
@@ -654,8 +653,9 @@ class Calendar:
             else:
                 # occurance of the DOW in the current week is calculated
                 diff = wkdy - wd
-                        
-        print "wd %s, wkdy %s, offset %d, style %d\n" % (wd, wkdy, offset, style)
+
+        if _debug:
+            print "wd %s, wkdy %s, offset %d, style %d\n" % (wd, wkdy, offset, style)
 
         return diff
 
